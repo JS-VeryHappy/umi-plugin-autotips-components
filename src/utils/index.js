@@ -46,9 +46,9 @@ const loaderDumi = (autoTipsCounts, autoTipsComponents, routes) => {
           item.pageRouteName = pagePathRoute.name || null;
         }
       }
-     
+
     })
-    if(autoTipsComponents[autoTipsCounts[index].componentName]){
+    if (autoTipsComponents[autoTipsCounts[index].componentName]) {
       autoTipsCounts[index] = {
         ...autoTipsCounts[index],
         ...autoTipsComponents[autoTipsCounts[index].componentName]
@@ -126,11 +126,28 @@ const componentsCount = (filePath, autoTipsCounts, autoTipsComponents) => {
       }
     }
     if (isDir) {
-      componentsCount(filepath, autoTipsCounts,autoTipsComponents); // 递归，如果是文件夹，就继续遍历该文件夹里面的文件；
+      componentsCount(filepath, autoTipsCounts, autoTipsComponents); // 递归，如果是文件夹，就继续遍历该文件夹里面的文件；
     }
   });
 }
+
+function dateFormatFn(date, format = 'YYYY-MM-DD HH:mm:ss') {
+  let config = {
+    YYYY: date.getFullYear(),
+    MM: date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1),
+    DD: date.getDate(),
+    HH: date.getHours() > 10 ? date.getHours() : '0' + (date.getHours()),
+    mm: date.getMinutes(),
+    ss: date.getSeconds()
+  }
+  for (const key in config) {
+    format = format.replace(key, config[key])
+  }
+  return format
+}
+
 module.exports = {
   componentsCount,
-  loaderDumi
+  loaderDumi,
+  dateFormatFn
 }

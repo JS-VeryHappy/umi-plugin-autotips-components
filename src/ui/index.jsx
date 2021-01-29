@@ -4,6 +4,7 @@ import styles from './index.less';
 import { Drawer, Divider, Col, Row, Typography, Space, Descriptions, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import autoTipsCounts from '@/.umi/autotips-components/data.json';
+import { dateFormatFn } from '../utils/index';
 
 const { Paragraph, Text, Link, Title } = Typography;
 
@@ -119,7 +120,7 @@ function App(props) {
                         </Space>
                     </Descriptions.Item>
                     <Descriptions.Item label="最后修改时间" span={3}>
-                        {new Date(parseInt(fileStats.mtimeMs)).toLocaleString()}
+                        {dateFormatFn(new Date(parseInt(fileStats.mtimeMs)))}
                     </Descriptions.Item>
                 </Descriptions>
 

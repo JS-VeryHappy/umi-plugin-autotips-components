@@ -6,6 +6,6 @@ export default defineConfig({
   },
   plugins: [require.resolve('../src')],
   autotipsComponents:{
-    enable:false
+    enable:true
   }
 });

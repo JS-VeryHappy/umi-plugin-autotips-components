@@ -1,11 +1,13 @@
-.main{
+.main {
     position: relative;
-    .icon{
+    display: unset;
+    .icon {
         position: absolute;
-        top:2px;
-        left: -20px;
-        font-size:12px;
+        top: 2px;
+        left: -15px;
+        font-size: 12px;
         color: #1890ff;
         cursor: pointer;
+        z-index: 999999;
     }
 }

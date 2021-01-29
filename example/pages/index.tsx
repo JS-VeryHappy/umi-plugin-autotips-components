@@ -10,7 +10,7 @@ export default () => (
   <div className={styles.normal}>
     <TestCustom />
     <InputAutoCompleteCustom />
-    Hello Umi!
+    <div>Hello Umi!</div>
     <InputTooltipCustom />
     <Test1Custom />
     <InputSelectCustom />
