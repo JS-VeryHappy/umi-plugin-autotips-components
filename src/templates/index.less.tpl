@@ -1,6 +1,6 @@
 .main {
     position: relative;
-    display: unset;
+    background:rgba(255,255,255,.3);
     .icon {
         position: absolute;
         top: 2px;

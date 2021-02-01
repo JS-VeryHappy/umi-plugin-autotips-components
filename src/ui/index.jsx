@@ -1,24 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './index.less';
-import { Drawer, Divider, Col, Row, Typography, Space, Descriptions, Tooltip } from 'antd';
+import { Drawer, Divider, Col, Row, Typography, Space, Descriptions, Tooltip, Checkbox } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import autoTipsCounts from '@/.umi/autotips-components/data.json';
 import { dateFormatFn } from '../utils/index';
+import { socketClient } from './socketClient';
 
 const { Paragraph, Text, Link, Title } = Typography;
 
 function App(props) {
-   
-    const [visible, setVisible] = useState(true);
-    const [componentInfo, setComponentInfo] = useState({ fileName: "/Applications/MAMP/htdocs/myframework/umi-plugin-autotips-components/example/pages/Test1Custom/index.tsx" });
-    const { hasDumi } = props;
 
-    const onClose = () => {
-        setVisible(false);
-    }
+    const [visible, setVisible] = useState(false);
+    const [visibleChecked, setVisibleChecked] = useState(() => {
+        const visibleAutotips = localStorage.getItem('visibleAutotips');
+        if (visibleAutotips === 'true') {
+            return true;
+        }
+        return false;
+    });
 
-    useEffect(() => {
+    const [componentInfo, setComponentInfo] = useState(
+        {
+            // fileName: "/Applications/MAMP/htdocs/myframework/umi-plugin-autotips-components/example/pages/Test1Custom/index.tsx"
+        }
+    );
+    const { hasDumi, socketPort } = props;
+
+    //组件初始化监听消息事件
+    useEffect(async () => {
+        const { hostname, protocol } = window.location;
+        const socket =  await socketClient(`${protocol}//${hostname}:${protocol}/autotipsui`, {
+            onError: e => {
+               console.log('====================================');
+               console.log(e);
+               console.log('====================================');
+            },
+            onMessage: ({ type, payload }) => {
+                // 区分不同项目
+                if (!payload || winPath(payload.projectPath) !== winPath(path)) return;
+
+                switch (type) {
+                    case 'org.umi.ui.bubble.showLoading':
+                        this.setState({
+                            loading: true,
+                        });
+                        break;
+                    case 'org.umi.ui.bubble.hideLoading':
+                        this.setState({
+                            loading: false,
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            },
+        })
         const handleMessage = function (event) {
             if (event.data.source === 'autotips-components' && event.data.payload.event === 'click-components') {
                 setComponentInfo(event.data.payload.payload);
@@ -31,12 +68,28 @@ function App(props) {
         }
     }, [])
 
+    //关闭弹窗
+    const onClose = () => {
+        setVisible(false);
+    }
+    //切换显示状态
+    const onChange = (e) => {
+        setVisibleChecked(e.target.checked)
+        localStorage.setItem('visibleAutotips', e.target.checked);
+        window.postMessage({
+            payload: { event: "visible-autotips", payload: e.target.checked },
+            source: "autotips-components"
+        });
+    }
+
+    //拿取点指定组件值
     const counts = autoTipsCounts || null;
     const fileName = componentInfo.fileName || '';
     const arr = fileName.split('/');
     const title = arr[arr.length - 2];
     const { count = 0, paths = [], dumiDocPath = [], fileStats = {} } = counts[title] || {};
-   
+
+
     const DumiDom = () => {
         if (!hasDumi) {
             return <Text type="warning">未开启Dumi</Text>;
@@ -65,6 +118,11 @@ function App(props) {
 
     return (
         <>
+            <div className={styles.main}>
+                <div className={styles.setting}>
+                    <Checkbox onChange={onChange} checked={visibleChecked}>显示</Checkbox>
+                </div>
+            </div>
             <Drawer
                 className={styles.drawer}
                 width={800}

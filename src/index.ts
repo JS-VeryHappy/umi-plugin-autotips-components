@@ -4,10 +4,15 @@ import { readFileSync, readdirSync, statSync } from 'fs';
 import { IApi } from '@umijs/types';
 import { join, resolve } from 'path';
 import { componentsCount, loaderDumi } from './utils/index';
+import { init as socketInit } from './socket';
+
 
 export default function (api: IApi) {
   const { utils } = api;
   const { winPath } = utils;
+  const port = 6000;
+  //建立socket
+  socketInit(port);
 
   //定义扩展接收的参数
   api.describe({
@@ -72,7 +77,8 @@ export default function (api: IApi) {
     (() => {
       try {
         require('${winPath(join(__dirname, './ui'))}').default({
-            hasDumi:${hasDumi}
+            hasDumi:${hasDumi},
+            socketPort:${port}
         });
       } catch (e) {
         console.warn('Umi UI render error:', e);
