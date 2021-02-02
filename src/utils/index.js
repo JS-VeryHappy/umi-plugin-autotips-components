@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-
+const docgen = require("react-docgen");
 
 const winPath = (path) => {
   const isExtendedLengthPath = /^\\\\\?\\/.test(path);
@@ -69,6 +69,8 @@ const loaderDumi = (autoTipsCounts, autoTipsComponents, routes) => {
         ...autoTipsComponents[autoTipsCounts[index].componentName]
       }
     }
+    // //读取组件ts组件接口文档说明
+    // autoTipsCounts[index].docs = docgen.parse(autoTipsCounts[index].path,{}).find(item=>item.displayName === autoTipsCounts[index].componentName)
   };
 }
 
@@ -153,10 +155,7 @@ const componentsCount = (filePath, autoTipsCounts, autoTipsComponents) => {
  * @param {*} filePath 
  */
 const loadFileIdentifier = (filePath) => {
-  // const module = require(filePath);
-  console.log('====================================');
-  console.log(filePath);
-  console.log('====================================');
+  
   return {
     name:'dddd'
   };

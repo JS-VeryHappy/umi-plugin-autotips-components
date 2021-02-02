@@ -37,24 +37,27 @@ function App(props) {
 
     //组件初始化监听消息事件
     useEffect(() => {
+        //预留未来做props动态插入
         //启动连接websocket
-        const { hostname, protocol } = window.location;
-        (async () => {
-            await socketClient(`${protocol}//${hostname}:${socketPort}/autotips`)
-        })()
+        // const { hostname, protocol } = window.location;
+        // (async () => {
+        //     await socketClient(`${protocol}//${hostname}:${socketPort}/autotips`)
+        // })()
 
         const handleMessage = (event) => {
             if (event.data.source === 'autotips.components' && event.data.payload.event === 'click') {
-                socketCallSend({
-                    type: 'autotips.components.get.types',
-                    payload: {
-                        filePath: winPath(event.data.payload.payload.fileName)
-                    }
-                }).then((payload) => {
-                    setComponentInfo(event.data.payload.payload);
-                    setVisible(true);
-                }).catch();
-
+                //预留未来做props动态插入
+                // socketCallSend({
+                //     type: 'autotips.components.get.types',
+                //     payload: {
+                //         filePath: winPath(event.data.payload.payload.fileName)
+                //     }
+                // }).then((payload) => {
+                //     setComponentInfo(event.data.payload.payload);
+                //     setVisible(true);
+                // }).catch();
+                setComponentInfo(event.data.payload.payload);
+                setVisible(true);
             }
         };
         window.addEventListener('message', handleMessage, false);

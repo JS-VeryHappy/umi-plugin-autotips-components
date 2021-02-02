@@ -6,17 +6,16 @@ import { join, resolve } from 'path';
 import { componentsCount, loaderDumi } from './utils/index';
 import { init as socketInit } from './socket';
 
-
-
 export default function (api: IApi) {
   const { utils } = api;
   const { winPath } = utils;
+  //预留未来做props动态插入
   const port = 6688;
 
-  api.onPluginReady(() => {
-    //建立socket
-    socketInit(port);
-  });
+  // api.onPluginReady(() => {
+  //   //建立socket
+  //   socketInit(port);
+  // });
   //定义扩展接收的参数
   api.describe({
     key: 'autotipsComponents',
@@ -73,7 +72,7 @@ export default function (api: IApi) {
 
     api.writeTmpFile({
       path: 'autotips-components/data.json',
-      content: JSON.stringify(autoTipsCounts),
+      content: JSON.stringify(autoTipsCounts, null, 4),
     });
 
     return `
