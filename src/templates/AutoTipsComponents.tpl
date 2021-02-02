@@ -16,7 +16,7 @@ export const AutoTipsComponents = function AutoTipsComponents(props) {
 
   useEffect(() => {
     const handleMessage = function (event) {
-      if (event.data.source === 'autotips-components' && event.data.payload.event === 'visible-autotips') {
+      if (event.data.source === 'autotips.components' && event.data.payload.event === 'visible') {
         setVisible(event.data.payload.payload);
       }
     };
@@ -46,8 +46,8 @@ export const AutoTipsComponents = function AutoTipsComponents(props) {
       _source = props.children._source;
     }
     window.postMessage({
-      payload: { event: "click-components", payload: _source },
-      source: "autotips-components"
+      payload: { event: "click", payload: _source },
+      source: "autotips.components"
     });
   }
   return (

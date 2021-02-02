@@ -7,13 +7,16 @@ import { componentsCount, loaderDumi } from './utils/index';
 import { init as socketInit } from './socket';
 
 
+
 export default function (api: IApi) {
   const { utils } = api;
   const { winPath } = utils;
-  const port = 6000;
-  //建立socket
-  socketInit(port);
+  const port = 6688;
 
+  api.onPluginReady(() => {
+    //建立socket
+    socketInit(port);
+  });
   //定义扩展接收的参数
   api.describe({
     key: 'autotipsComponents',

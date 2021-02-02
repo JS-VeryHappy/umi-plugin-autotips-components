@@ -11,6 +11,21 @@ const winPath = (path) => {
 
   return path.replace(/\\/g, '/');
 }
+
+const dateFormatFn = (date, format = 'YYYY-MM-DD HH:mm:ss') => {
+  let config = {
+    YYYY: date.getFullYear(),
+    MM: date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1),
+    DD: date.getDate(),
+    HH: date.getHours() > 10 ? date.getHours() : '0' + (date.getHours()),
+    mm: date.getMinutes(),
+    ss: date.getSeconds()
+  }
+  for (const key in config) {
+    format = format.replace(key, config[key])
+  }
+  return format
+}
 /**
  * 获取dumi文档 和 处理地址信息
  * @param {*} autoTipsCounts  //文件使用组件次数和路径集合
@@ -131,23 +146,24 @@ const componentsCount = (filePath, autoTipsCounts, autoTipsComponents) => {
   });
 }
 
-function dateFormatFn(date, format = 'YYYY-MM-DD HH:mm:ss') {
-  let config = {
-    YYYY: date.getFullYear(),
-    MM: date.getMonth() + 1 > 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1),
-    DD: date.getDate(),
-    HH: date.getHours() > 10 ? date.getHours() : '0' + (date.getHours()),
-    mm: date.getMinutes(),
-    ss: date.getSeconds()
-  }
-  for (const key in config) {
-    format = format.replace(key, config[key])
-  }
-  return format
-}
 
+
+/**
+ * 读取指定文件 types定义
+ * @param {*} filePath 
+ */
+const loadFileIdentifier = (filePath) => {
+  // const module = require(filePath);
+  console.log('====================================');
+  console.log(filePath);
+  console.log('====================================');
+  return {
+    name:'dddd'
+  };
+}
 module.exports = {
   componentsCount,
   loaderDumi,
-  dateFormatFn
+  dateFormatFn,
+  loadFileIdentifier
 }

@@ -5,10 +5,18 @@ import { Drawer, Divider, Col, Row, Typography, Space, Descriptions, Tooltip, Ch
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import autoTipsCounts from '@/.umi/autotips-components/data.json';
 import { dateFormatFn } from '../utils/index';
-import { socketClient } from './socketClient';
+import { socketClient, socketCallSend } from './socketClient';
 
 const { Paragraph, Text, Link, Title } = Typography;
+const winPath = (path) => {
+    const isExtendedLengthPath = /^\\\\\?\\/.test(path);
 
+    if (isExtendedLengthPath) {
+        return path;
+    }
+
+    return path.replace(/\\/g, '/');
+}
 function App(props) {
 
     const [visible, setVisible] = useState(false);
@@ -28,38 +36,25 @@ function App(props) {
     const { hasDumi, socketPort } = props;
 
     //组件初始化监听消息事件
-    useEffect(async () => {
+    useEffect(() => {
+        //启动连接websocket
         const { hostname, protocol } = window.location;
-        const socket =  await socketClient(`${protocol}//${hostname}:${protocol}/autotipsui`, {
-            onError: e => {
-               console.log('====================================');
-               console.log(e);
-               console.log('====================================');
-            },
-            onMessage: ({ type, payload }) => {
-                // 区分不同项目
-                if (!payload || winPath(payload.projectPath) !== winPath(path)) return;
+        (async () => {
+            await socketClient(`${protocol}//${hostname}:${socketPort}/autotips`)
+        })()
 
-                switch (type) {
-                    case 'org.umi.ui.bubble.showLoading':
-                        this.setState({
-                            loading: true,
-                        });
-                        break;
-                    case 'org.umi.ui.bubble.hideLoading':
-                        this.setState({
-                            loading: false,
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            },
-        })
-        const handleMessage = function (event) {
-            if (event.data.source === 'autotips-components' && event.data.payload.event === 'click-components') {
-                setComponentInfo(event.data.payload.payload);
-                setVisible(true);
+        const handleMessage = (event) => {
+            if (event.data.source === 'autotips.components' && event.data.payload.event === 'click') {
+                socketCallSend({
+                    type: 'autotips.components.get.types',
+                    payload: {
+                        filePath: winPath(event.data.payload.payload.fileName)
+                    }
+                }).then((payload) => {
+                    setComponentInfo(event.data.payload.payload);
+                    setVisible(true);
+                }).catch();
+
             }
         };
         window.addEventListener('message', handleMessage, false);
@@ -77,12 +72,12 @@ function App(props) {
         setVisibleChecked(e.target.checked)
         localStorage.setItem('visibleAutotips', e.target.checked);
         window.postMessage({
-            payload: { event: "visible-autotips", payload: e.target.checked },
-            source: "autotips-components"
+            payload: { event: "visible", payload: e.target.checked },
+            source: "autotips.components"
         });
     }
 
-    //拿取点指定组件值
+    //取指定组件值
     const counts = autoTipsCounts || null;
     const fileName = componentInfo.fileName || '';
     const arr = fileName.split('/');

@@ -1,25 +1,39 @@
 const http = require('http');
 const sockjs = require('sockjs');
+const utils =  require('./utils/index');
 
 const init = (port) => {
-    
-    const socket = sockjs.createServer();
+    const socket = sockjs.createServer({
+        prefix: '/autotips',
+        log: (severity, message) => {
+            // console.log(severity, message);
+        }
+    });
 
     socket.on('connection', function (conn) {
-        conn.on('data', function (message) {
-            conn.write(message);
+        conn.on('data', function (clientMsg) {
+            const { type, payload } = JSON.parse(clientMsg);
+
+            let message = {
+                type: type,
+                payload: {}
+            }
+            switch (type) {
+                case 'autotips.components.get.types':
+                    message.type = type + '/success';
+                    message.payload = utils.loadFileIdentifier(payload.filePath);
+                    break;
+                default:
+            }
+
+            conn.write(JSON.stringify(message));
         });
-        conn.on('close', function () {
-            console.log('关闭连接');
-        });
+        conn.on('close', function () { });
     });
 
     const server = http.createServer();
-    socket.installHandlers(server, {
-        prefix: '/autotipsui',
-        log: () => { },
-    });
-    server.listen(port, process.env.HOST || '127.0.0.1');
+    socket.installHandlers(server);
+    server.listen(port, '127.0.0.1');
 
     return {
         socket,
