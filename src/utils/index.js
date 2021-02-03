@@ -88,7 +88,7 @@ const loaderDocs = (autoTipsCounts, autoTipsComponents, routes) => {
  */
 const componentsCount = (filePath, autoTipsCounts, autoTipsComponents) => {
   //排除.umi文件夹
-  if (filePath.indexOf('/.umi/') !== -1) {
+  if (filePath.indexOf('/.umi') !== -1) {
     return;
   }
   //读取文件夹
@@ -156,20 +156,9 @@ const componentsCount = (filePath, autoTipsCounts, autoTipsComponents) => {
   });
 };
 
-/**
- * 读取指定文件 types定义
- * @param {*} filePath
- */
-const loadFileIdentifier = filePath => {
-  return {
-    name: 'dddd',
-  };
-};
-
 module.exports = {
   componentsCount,
   winPath,
   loaderDocs,
   dateFormatFn,
-  loadFileIdentifier,
 };
