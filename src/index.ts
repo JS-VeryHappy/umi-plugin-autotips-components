@@ -3,10 +3,10 @@
 import { readFileSync, readdirSync, statSync } from 'fs';
 import { IApi } from '@umijs/types';
 import { join, resolve } from 'path';
-import { componentsCount, loaderDumi } from './utils/index';
-import { init as socketInit } from './socket';
+import { componentsCount, loaderDocs } from './utils/index';
+// import { init as socketInit } from './socket';
 
-export default function (api: IApi) {
+export default function(api: IApi) {
   const { utils } = api;
   const { winPath } = utils;
   //预留未来做props动态插入
@@ -21,23 +21,29 @@ export default function (api: IApi) {
     key: 'autotipsComponents',
     config: {
       default: {
-        enable: true,//默认开启扩展
+        enable: true, //默认开启扩展
       },
       schema(joi) {
         return joi.object();
-      }
-    }
+      },
+    },
   });
 
   //创建组件插入.umi文件内
   api.onGenerateFiles(() => {
-    const tpl = readFileSync(join(winPath(__dirname), 'templates/AutoTipsComponents.tpl'), 'utf-8');
+    const tpl = readFileSync(
+      join(winPath(__dirname), 'templates/AutoTipsComponents.tpl'),
+      'utf-8',
+    );
     api.writeTmpFile({
       path: 'autotips-components/AutoTipsComponents.tsx',
       content: tpl,
     });
 
-    const css = readFileSync(join(winPath(__dirname), 'templates/index.less.tpl'), 'utf-8');
+    const css = readFileSync(
+      join(winPath(__dirname), 'templates/index.less.tpl'),
+      'utf-8',
+    );
     api.writeTmpFile({
       path: 'autotips-components/index.less',
       content: css,
@@ -49,25 +55,32 @@ export default function (api: IApi) {
     {
       exportAll: true,
       source: '../autotips-components/AutoTipsComponents',
-    }
+    },
   ]);
 
   //插入插件ui显示
   api.addEntryCode(async () => {
     //如果没有开启插件使用
-    if (!api.config.autotipsComponents || !api.config.autotipsComponents.enable) {
+    if (
+      !api.config.autotipsComponents ||
+      !api.config.autotipsComponents.enable
+    ) {
       return '';
     }
     //每一次编译都会运行一下代码实时更新、如果考虑性能、可能放入扩展加载api里面重新编译更新
     let autoTipsCounts = {};
     let autoTipsComponents = {};
     //@ts-ignore
-    await componentsCount(api.paths.absSrcPath, autoTipsCounts, autoTipsComponents)
+    await componentsCount(
+      api.paths.absSrcPath,
+      autoTipsCounts,
+      autoTipsComponents,
+    );
 
     const hasDumi = api.hasPresets(['@umijs/preset-dumi']);
     if (hasDumi) {
-      const routes = await api.getRoutes()
-      await loaderDumi(autoTipsCounts, autoTipsComponents, routes);
+      const routes = await api.getRoutes();
+      await loaderDocs(autoTipsCounts, autoTipsComponents, routes);
     }
 
     api.writeTmpFile({
@@ -86,7 +99,7 @@ export default function (api: IApi) {
         console.warn('Umi UI render error:', e);
       }
     })();
-  `
+  `;
   });
 
   // @ts-ignore
@@ -101,8 +114,5 @@ export default function (api: IApi) {
         .loader(resolve('./src/loader/autotips-components-loader'))
         .end();
     }
-
   });
-
-
 }
