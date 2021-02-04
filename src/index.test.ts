@@ -30,7 +30,7 @@ test('生成临时文件', async () => {
   const data = require(join(
     cwd,
     '.umi-test',
-    'autotips-components',
+    'plugin-autotips-components',
     'data.json',
   ));
 
