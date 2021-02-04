@@ -10,7 +10,7 @@ test('显示页面', async () => {
   const cwd = join(fixtures, 'normal');
   const reactNode = require(join(cwd, 'pages', 'index.tsx')).default();
   render(reactNode);
-  expect(screen.queryByText('Hello Umi!')).not.toBeNull();
+  expect(screen.queryByText('Hello autotips components!')).not.toBeNull();
 });
 
 test('生成临时文件', async () => {
