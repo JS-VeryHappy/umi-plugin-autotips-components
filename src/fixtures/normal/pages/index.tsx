@@ -7,7 +7,7 @@ import InputTooltipCustom from './FormGroup/InputTooltipCustom';
 export default () => (
   <div className={styles.normal}>
     <InputAutoCompleteCustom />
-    <div>Hello Umi!</div>
+    <h1>Hello autotips components!</h1>
     <InputTooltipCustom />
     <InputSelectCustom />
   </div>

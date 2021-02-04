@@ -1,8 +1,5 @@
 
 export default async function (e:any) {
-  console.log('====================================');
-  console.log(e);
-  console.log('====================================');
   const {page, host} = e;
   await page.goto(`${host}/`, {
     waitUntil: 'networkidle2',
@@ -11,5 +8,6 @@ export default async function (e:any) {
     //@ts-ignore
     () => document.querySelector('h1').innerHTML,
   );
+ 
   expect(text).toEqual('umi-plugin-autotips-components');
 };
