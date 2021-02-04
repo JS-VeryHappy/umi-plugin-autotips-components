@@ -14,7 +14,7 @@ import {
   Table,
 } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import autoTipsCounts from '@/.umi/autotips-components/data.json';
+import autoTipsCounts from '@/.umi/plugin-autotips-components/data.json';
 import { dateFormatFn, winPath } from '../utils/index';
 // import { socketClient, socketCallSend } from './socketClient';
 

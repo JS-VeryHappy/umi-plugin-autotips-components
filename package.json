@@ -1,7 +1,7 @@
 {
   "name": "umi-plugin-autotips-components",
   "main": "lib/index.js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "intelligent prompt components",
   "authors": {
     "name": "zhouyingchao",

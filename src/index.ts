@@ -36,7 +36,7 @@ export default function(api: IApi) {
       'utf-8',
     );
     api.writeTmpFile({
-      path: 'autotips-components/AutoTipsComponents.tsx',
+      path: 'plugin-autotips-components/AutoTipsComponents.tsx',
       content: tpl,
     });
 
@@ -45,7 +45,7 @@ export default function(api: IApi) {
       'utf-8',
     );
     api.writeTmpFile({
-      path: 'autotips-components/index.less',
+      path: 'plugin-autotips-components/index.less',
       content: css,
     });
   });
@@ -54,7 +54,7 @@ export default function(api: IApi) {
   api.addUmiExports(() => [
     {
       exportAll: true,
-      source: '../autotips-components/AutoTipsComponents',
+      source: '../plugin-autotips-components/AutoTipsComponents',
     },
   ]);
 
@@ -93,7 +93,7 @@ export default function(api: IApi) {
     );
 
     api.writeTmpFile({
-      path: 'autotips-components/data.json',
+      path: 'plugin-autotips-components/data.json',
       content: JSON.stringify(autoTipsCounts, null, 4),
     });
 
