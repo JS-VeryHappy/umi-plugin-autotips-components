@@ -75,13 +75,22 @@ export default function(api: IApi) {
       api.paths.absSrcPath,
       autoTipsCounts,
       autoTipsComponents,
+      api.config.autotipsComponents,
     );
 
     const hasDumi = api.hasPresets(['@umijs/preset-dumi']);
-    if (hasDumi) {
-      const routes = await api.getRoutes();
-      await loaderDocs(autoTipsCounts, autoTipsComponents, routes);
+    const hasLayout = api.hasPresets(['@umijs/preset-react']);
+    const routes = await api.getRoutes();
+    let currentRoutes: any = routes;
+    if (hasLayout && api.config.layout) {
+      currentRoutes = routes[0].routes;
     }
+    await loaderDocs(
+      autoTipsCounts,
+      autoTipsComponents,
+      currentRoutes,
+      hasDumi,
+    );
 
     api.writeTmpFile({
       path: 'autotips-components/data.json',

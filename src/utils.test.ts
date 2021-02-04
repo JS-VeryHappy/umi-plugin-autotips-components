@@ -12,6 +12,9 @@ test('loaderDocs', () => {
     join(__dirname, '/fixtures'),
     autoTipsCounts,
     autoTipsComponents,
+    {
+      exclude: [],
+    },
   );
   loaderDocs(autoTipsCounts, autoTipsComponents, [
     {
@@ -135,6 +138,9 @@ test('componentsCount', () => {
     join(__dirname, '/fixtures'),
     autoTipsCounts,
     autoTipsComponents,
+    {
+      exclude: [],
+    },
   );
   setTimeout(() => {
     expect(autoTipsCounts).toContain('InputAutoCompleteCustom');

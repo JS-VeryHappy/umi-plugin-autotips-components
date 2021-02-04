@@ -35,23 +35,30 @@ const dateFormatFn = (date, format = 'YYYY-MM-DD HH:mm:ss') => {
  * @param {*} autoTipsComponents //组件信息集合
  * @param {*} routes //当前路由
  */
-const loaderDocs = (autoTipsCounts, autoTipsComponents, routes) => {
-  const dumiRoutes = routes.find(item => item.__dumiRoot).routes;
+const loaderDocs = (
+  autoTipsCounts,
+  autoTipsComponents,
+  routes,
+  hasDumi = false,
+) => {
+  const dumiRoute = routes.find(item => item.__dumiRoot);
+  const dumiRoutes = dumiRoute ? dumiRoute.routes : null;
 
   for (let index in autoTipsCounts) {
-    //遍历路由获取组件对应dumi文档准确地址
-    const DumiRoute = dumiRoutes.find(route => {
-      return route.meta.componentName === index;
-    });
     autoTipsCounts[index].dumiDocPath = null;
-    if (DumiRoute) {
-      autoTipsCounts[index].dumiDocPath = DumiRoute.path;
+    if (hasDumi && dumiRoutes) {
+      //遍历路由获取组件对应dumi文档准确地址
+      const DumiRoute = dumiRoutes.find(route => {
+        return route.meta.componentName === index;
+      });
+      if (DumiRoute) {
+        autoTipsCounts[index].dumiDocPath = DumiRoute.path;
+      }
     }
-
     //遍历路由获取组件对应url路由和页面路径
     autoTipsCounts[index].paths.forEach(item => {
       const pages = item.path.match(/\/pages\/.*/g);
-      item.pagePath = pages[0] || null;
+      item.pagePath = pages ? pages[0] : null;
       item.pageRoute = null;
       item.pageRouteName = null;
       if (item.pagePath) {
@@ -74,9 +81,13 @@ const loaderDocs = (autoTipsCounts, autoTipsComponents, routes) => {
       };
     }
     //读取组件ts组件接口文档说明
-    autoTipsCounts[index].docs = docgen.parse(
-      fs.readFileSync(autoTipsCounts[index].path, 'utf-8'),
-    );
+    autoTipsCounts[index].docs = {};
+    try {
+      const source = fs.readFileSync(autoTipsCounts[index].path, 'utf-8');
+      if (source) {
+        autoTipsCounts[index].docs = docgen.parse(source);
+      }
+    } catch (error) {}
   }
 };
 
@@ -86,10 +97,28 @@ const loaderDocs = (autoTipsCounts, autoTipsComponents, routes) => {
  * @param {*} autoTipsCounts  //文件使用组件次数和路径集合
  * @param {*} autoTipsComponents //组件信息集合
  */
-const componentsCount = (filePath, autoTipsCounts, autoTipsComponents) => {
+const componentsCount = (
+  filePath,
+  autoTipsCounts,
+  autoTipsComponents,
+  config,
+) => {
   //排除.umi文件夹
   if (filePath.indexOf('/.umi') !== -1) {
     return;
+  }
+  //排除指定目录规则的文件
+  if (config.exclude) {
+    let exclude = false;
+    config.exclude.forEach(reg => {
+      if (filePath.indexOf(reg) !== -1) {
+        exclude = true;
+        return;
+      }
+    });
+    if (exclude) {
+      return;
+    }
   }
   //读取文件夹
   const files = fs.readdirSync(filePath);
@@ -151,7 +180,7 @@ const componentsCount = (filePath, autoTipsCounts, autoTipsComponents) => {
       }
     }
     if (isDir) {
-      componentsCount(filepath, autoTipsCounts, autoTipsComponents); // 递归，如果是文件夹，就继续遍历该文件夹里面的文件；
+      componentsCount(filepath, autoTipsCounts, autoTipsComponents, config); // 递归，如果是文件夹，就继续遍历该文件夹里面的文件；
     }
   });
 };

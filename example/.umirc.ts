@@ -7,5 +7,9 @@ export default defineConfig({
   plugins: [require.resolve('../lib')],
   autotipsComponents: {
     enable: true,
+    exclude: ['/Test1Custom'],
+  },
+  layout: {
+    locale: true,
   },
 });
