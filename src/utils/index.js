@@ -128,9 +128,9 @@ const componentsCount = (
   }
   files.forEach(filename => {
     // path.join得到当前文件的绝对路径
-    const filepath = path.join(filePath, filename);
+    let _filePath = winPath(path.join(filePath, filename));
     // 根据文件路径获取文件信息
-    const stats = fs.statSync(filepath);
+    const stats = fs.statSync(_filePath);
     if (!stats) {
       console.warn('获取文件stats失败');
       return;
@@ -138,15 +138,15 @@ const componentsCount = (
     const isFile = stats.isFile(); // 是否为文件
     const isDir = stats.isDirectory(); // 是否为文件夹
     //如果是文件 并且 是tsx后缀名
-    if (isFile && /.*(\.tsx)$/g.test(filepath)) {
+    if (isFile && /.*(\.tsx)$/g.test(_filePath)) {
       //如果文件是组件、保存组件信息
-      if (/([a-zA-z0-9]|\s)*Custom\/.*(\.tsx)$/g.test(filepath)) {
-        const arr = filepath.split('/');
+      if (/([a-zA-z0-9]|\s)*Custom\/.*(\.tsx)$/g.test(_filePath)) {
+        const arr = _filePath.split('/');
         const name = arr[arr.length - 2];
         if (!autoTipsComponents[name]) {
           autoTipsComponents[name] = {
             componentName: name,
-            path: filepath,
+            path: _filePath,
             fileStats: {
               size: (stats.size / 1024).toFixed(2),
               mtimeMs: stats.mtimeMs,
@@ -155,7 +155,7 @@ const componentsCount = (
         }
       }
       //匹配文件里面出现的组件的次数和路径
-      const source = fs.readFileSync(filepath, 'utf-8');
+      const source = fs.readFileSync(_filePath, 'utf-8');
       const countArr = source.match(/<([a-zA-z0-9]|\s)*Custom/g);
       if (countArr) {
         countArr.forEach(item => {
@@ -163,7 +163,7 @@ const componentsCount = (
           if (autoTipsCounts[item]) {
             autoTipsCounts[item].count = autoTipsCounts[item].count + 1;
             autoTipsCounts[item].paths.push({
-              path: winPath(filepath),
+              path: _filePath,
             });
           } else {
             autoTipsCounts[item] = {
@@ -171,7 +171,7 @@ const componentsCount = (
               componentName: item,
               paths: [
                 {
-                  path: winPath(filepath),
+                  path: _filePath,
                 },
               ],
             };
@@ -180,7 +180,7 @@ const componentsCount = (
       }
     }
     if (isDir) {
-      componentsCount(filepath, autoTipsCounts, autoTipsComponents, config); // 递归，如果是文件夹，就继续遍历该文件夹里面的文件；
+      componentsCount(_filePath, autoTipsCounts, autoTipsComponents, config); // 递归，如果是文件夹，就继续遍历该文件夹里面的文件；
     }
   });
 };

@@ -71,8 +71,9 @@ export default function(api: IApi) {
     let autoTipsCounts = {};
     let autoTipsComponents = {};
     //@ts-ignore
+
     await componentsCount(
-      api.paths.absSrcPath,
+      winPath(api.paths.absSrcPath || ''),
       autoTipsCounts,
       autoTipsComponents,
       api.config.autotipsComponents,

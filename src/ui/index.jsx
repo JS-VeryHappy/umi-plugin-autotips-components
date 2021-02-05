@@ -87,7 +87,9 @@ function App(props) {
 
   //取指定组件值
   const counts = autoTipsCounts || null;
-  const fileName = componentInfo.fileName || '';
+
+  let fileName = componentInfo.fileName || '';
+  fileName = fileName.indexOf('\\') > -1 ? winPath(fileName) : fileName;
   const arr = fileName.split('/');
   const title = arr[arr.length - 2];
   const { count = 0, paths = [], dumiDocPath = [], fileStats = {}, docs = {} } =
