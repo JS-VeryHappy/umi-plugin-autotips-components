@@ -4,7 +4,7 @@ export default defineConfig({
   resolve: {
     includes: ['pages'],
   },
-  plugins: [require.resolve('../lib')],
+  plugins: [require.resolve('../src')],
   autotipsComponents: {
     enable: true,
     exclude: ['/Test1Custom'],

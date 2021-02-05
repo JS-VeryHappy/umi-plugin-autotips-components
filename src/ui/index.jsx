@@ -30,9 +30,7 @@ function App(props) {
     return false;
   });
 
-  const [componentInfo, setComponentInfo] = useState({
-    // fileName: "/Applications/MAMP/htdocs/myframework/umi-plugin-autotips-components/example/pages/Test1Custom/index.tsx"
-  });
+  const [componentInfo, setComponentInfo] = useState({});
   const { hasDumi, socketPort } = props;
 
   //组件初始化监听消息事件

@@ -120,7 +120,9 @@ export default function(api: IApi) {
         .test(/(\.tsx)$/)
         .pre()
         .use('autotips-components-loader')
-        .loader(resolve('./src/loader/autotips-components-loader'))
+        .loader(
+          `${winPath(join(__dirname, './loader/autotips-components-loader'))}`,
+        )
         .end();
     }
   });
