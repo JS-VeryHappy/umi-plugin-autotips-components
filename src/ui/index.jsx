@@ -246,6 +246,8 @@ function App(props) {
 
 const doc = window.document;
 const node = doc.createElement('div');
+node.style.display = 'unset';
+node.id = 'autotips-components';
 doc.body.appendChild(node);
 
 export default props => {
