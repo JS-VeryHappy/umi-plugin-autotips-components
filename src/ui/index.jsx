@@ -20,6 +20,16 @@ import { dateFormatFn, winPath } from '../utils/index';
 
 const { Paragraph, Text, Link, Title } = Typography;
 
+const mainStyle = {
+  position: 'fixed',
+  bottom: '50px',
+  right: 0,
+  background: 'rgba(255, 255, 255, 0.3)',
+  boxShadow:
+    '0 6px 16px -8px rgba(0, 0, 0, .08), 0 9px 28px 0 rgba(0, 0, 0, .05), 0 12px 48px 16px rgba(0, 0, 0, .03)',
+  padding: '10px',
+};
+
 function App(props) {
   const [visible, setVisible] = useState(false);
   const [visibleChecked, setVisibleChecked] = useState(() => {
@@ -169,7 +179,7 @@ function App(props) {
 
   return (
     <>
-      <div className={styles.main}>
+      <div className="autotips-components-main" style={mainStyle}>
         <div className={styles.setting}>
           <Checkbox onChange={onChange} checked={visibleChecked}>
             显示
