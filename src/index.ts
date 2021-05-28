@@ -84,8 +84,11 @@ export default function(api: IApi) {
     const routes = await api.getRoutes();
     let currentRoutes: any = routes;
     if (hasLayout && api.config.layout) {
-      currentRoutes = routes[0].routes;
+      // currentRoutes = routes[0].routes;
+      currentRoutes = currentRoutes.find((item: any) => item.path === '/')
+        .routes;
     }
+
     await loaderDocs(
       autoTipsCounts,
       autoTipsComponents,
