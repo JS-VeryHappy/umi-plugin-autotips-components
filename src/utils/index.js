@@ -137,6 +137,37 @@ const componentsCount = (
     }
     const isFile = stats.isFile(); // 是否为文件
     const isDir = stats.isDirectory(); // 是否为文件夹
+
+    //如果是文件  匹配当前文件有没有 json配置方式调用其他自定义组件 计数
+    if (isFile && /.*(\.(tsx|ts|json|js))$/g.test(_filePath)) {
+      //匹配文件里面出现的组件的次数和路径
+      const source = fs.readFileSync(_filePath, 'utf-8');
+      const countArr = source.match(/valueType:.*Custom/g);
+      if (countArr) {
+        countArr.forEach(item => {
+          item = item.replace('valueType:', '');
+          item = item.replace("'", '');
+          item = item.replace('"', '').trim();
+          if (autoTipsCounts[item]) {
+            autoTipsCounts[item].count = autoTipsCounts[item].count + 1;
+            autoTipsCounts[item].paths.push({
+              path: _filePath,
+            });
+          } else {
+            autoTipsCounts[item] = {
+              count: 1,
+              componentName: item,
+              paths: [
+                {
+                  path: _filePath,
+                },
+              ],
+            };
+          }
+        });
+      }
+    }
+
     //如果是文件 并且 是tsx后缀名
     if (isFile && /.*(\.tsx)$/g.test(_filePath)) {
       //如果文件是组件、保存组件信息
@@ -179,6 +210,7 @@ const componentsCount = (
         });
       }
     }
+
     if (isDir) {
       componentsCount(_filePath, autoTipsCounts, autoTipsComponents, config); // 递归，如果是文件夹，就继续遍历该文件夹里面的文件；
     }
